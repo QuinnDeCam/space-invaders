@@ -43,5 +43,7 @@ Changed all main files. Decided to add shield functionality to GameModel, then u
 # Prompt 7
 In GameView.java's paintComponent method only, draw the shields from the model's shield list. Use the shield's health value to choose a color from full green to dim red. Do not call any model mutating methods.
 # Results:
+Pretty much just changed the shields color gradient when dying to three 'lives', and full green, an olive yellow, then a dark red before dissapearing.
+**don't like this feature at all, may remove?**
 
 

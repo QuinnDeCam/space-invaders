@@ -18,7 +18,7 @@ public class GameModel {
     private int playerY;
     private static final int PLAYER_WIDTH = 40;
     private static final int PLAYER_HEIGHT = 40;
-    private static final int PLAYER_SPEED = 5;
+    private static final int PLAYER_SPEED = 10;
     
     // Alien grid
     private Alien[][] alienGrid;
@@ -35,7 +35,7 @@ public class GameModel {
     // Bullets
     private PlayerBullet playerBullet;
     private List<AlienBullet> alienBullets;
-    private static final int BULLET_SPEED = 7;
+    private static final int BULLET_SPEED = 8;
     private static final int ALIEN_BULLET_SPEED = 4;
     
     // Shields
