@@ -55,12 +55,31 @@ Fixed the issue, as well as succeessfully colored the sheilds with the correct n
 # Prompt 9
 In GameModel.java, trigger game over when any aliens have left the boundries of the screen. No Swing imports.
 # Results:
-
+Updated the GameModel.java and game triggers game over when aliens can no longer be shot at. Created a checkAliensOutOfBounds() method — checks if any alive alien has reached or passed the bottom of the screen (y + ALIEN_HEIGHT >= GAME_HEIGHT)
+Triggered during update() — called after alien movement each tick
+It also added a test in ModelTester.java where aliens leave screen triggers game-over, which passes. The ModelTester says there are 3 failed tests, supposedly fails to increase score when alien is destroyed, losing all lives triggers game-over, and sheilds are removed when health is zero. Actually running the program shows these tests do actually pass.  
 
 # Prompt 10
+In GameView.java, change how the aliens look, where the current square they are becomes a 9x7 pixels, where only some are filled. The shape should look like this:  
+int[][] alien = {
+        {0,0,1,0,0,0,1,0,0},
+        {0,1,1,1,0,1,1,1,0},
+        {1,1,1,1,1,1,1,1,1},
+        {1,0,1,1,1,1,1,0,1},
+        {1,1,1,0,1,0,1,1,1},
+        {0,1,0,0,0,0,0,1,0},
+        {1,0,0,1,0,1,0,0,1}
+    };
+    Where the "1"s represent where a pixel should be filled in with the same red. 
 # Results:
+Successfully changed the aliens to a pixel sprite!!! There is a still an red outlined square, but I was able to just turn that black so it wouldn't be visible, but it behaving as a hitbox is still there. 
+
 
 # Prompt 11
+Create a start screen that is a state in GameModel.java, but is only drawn in the GameView.java file with the name of the program in big green letters. When the game is over, (by winning or by losing), have a way of either starting the game again, which is triggered by a pressing the S key in GameController.java, or going back to the start screen. Show it as text in the GameView.java in white.
 # Results:
- 
+
+# Prompt 12 (Continuation of prompt above)
+In GameView.java, in the lose screen and the win screen, make the two options, (pressing S or pressing A), seperate lines.
+# Results
  
