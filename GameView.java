@@ -72,18 +72,21 @@ public class GameView extends JPanel {
         java.util.List<GameModel.Shield> shields = model.getShields();
         
         for (GameModel.Shield shield : shields) {
-            // Color based on health: full green (3) to dim red (1)
+            // Color based on health: green (5) → yellow-green (4) → pale (3) → orange (2) → red (1)
             Color shieldColor;
             int health = shield.getHealth();
             
-            if (health == 3) {
-                shieldColor = Color.GREEN;
+            if (health == 5) {
+                shieldColor = new Color(68, 206, 27); // Bright green
+            } else if (health == 4) {
+                shieldColor = new Color(187, 219, 68); // Light green
+            } else if (health == 3) {
+                shieldColor = new Color(247, 227, 121); // Yellow-green/pale
             } else if (health == 2) {
-                // Transition from green to yellow
-                shieldColor = new Color(128, 128, 0); // Olive (greenish-yellow)
+                shieldColor = new Color(242, 161, 52); // Orange
             } else {
-                // Red (health == 1)
-                shieldColor = new Color(139, 0, 0); // Dark red
+                // health == 1
+                shieldColor = new Color(229, 31, 31); // Red
             }
             
             g.setColor(shieldColor);

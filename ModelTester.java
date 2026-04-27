@@ -20,6 +20,7 @@ public class ModelTester {
         testShieldsCreatedAtStart();
         testShieldsTakeDamageFromBullets();
         testShieldsRemovedWhenHealthZero();
+        testAliensLeavingScreenTriggersGameOver();
         
         System.out.println("\n=== Test Summary ===");
         System.out.println("PASSED: " + passCount);
@@ -312,6 +313,45 @@ public class ModelTester {
             passCount++;
         } else {
             System.out.println("FAIL (shield count unchanged)");
+            failCount++;
+        }
+    }
+    
+    private static void testAliensLeavingScreenTriggersGameOver() {
+        System.out.print("Test 10: Aliens leaving screen triggers game-over... ");
+        GameModel model = new GameModel();
+        
+        if (model.isGameOver()) {
+            System.out.println("FAIL (game already over at start)");
+            failCount++;
+            return;
+        }
+        
+        // Get initial lives
+        int initialLives = model.getLives();
+        
+        // Force aliens to leave screen by moving them down many times
+        GameModel.Alien[][] grid = model.getAlienGrid();
+        
+        // Directly move aliens to the bottom boundary to simulate them leaving
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                if (grid[row][col].isAlive()) {
+                    // Set alien position at or past the bottom boundary
+                    grid[row][col].setY(model.getGameHeight() - model.getAlienHeight());
+                }
+            }
+        }
+        
+        // Call update to trigger the boundary check
+        model.update();
+        
+        // Game should be over now
+        if (model.isGameOver() && model.getLives() == 0) {
+            System.out.println("PASS (game over triggered)");
+            passCount++;
+        } else {
+            System.out.println("FAIL (game not over, lives: " + model.getLives() + ")");
             failCount++;
         }
     }

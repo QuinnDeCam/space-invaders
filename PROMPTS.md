@@ -45,5 +45,22 @@ In GameView.java's paintComponent method only, draw the shields from the model's
 # Results:
 Pretty much just changed the shields color gradient when dying to three 'lives', and full green, an olive yellow, then a dark red before dissapearing.
 **don't like this feature at all, may remove?**
+Attempted to edit the colors and added 5 lives, however it stop showing up. 
+
+# Prompt 8
+In GameView.java's paintComponent method only, draw the shields again from the model's shield list. Use the shield's health value, which should be 5, to choose a color from full green to dim red, which should be: (68,206,27), (187,219,68), (247,227,121), (242,161,52), then (229,31,31). Do not call any model mutating methods.
+# Results:
+Fixed the issue, as well as succeessfully colored the sheilds with the correct number of lives. 
+ 
+# Prompt 9
+In GameModel.java, trigger game over when any aliens have left the boundries of the screen. No Swing imports.
+# Results:
 
 
+# Prompt 10
+# Results:
+
+# Prompt 11
+# Results:
+ 
+ 

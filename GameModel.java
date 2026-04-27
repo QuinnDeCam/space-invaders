@@ -42,7 +42,7 @@ public class GameModel {
     private List<Shield> shields;
     private static final int SHIELD_WIDTH = 40;
     private static final int SHIELD_HEIGHT = 40;
-    private static final int SHIELD_HEALTH = 3;
+    private static final int SHIELD_HEALTH = 5;
     
     // Game state
     private int score;
@@ -64,6 +64,7 @@ public class GameModel {
         
         public int getX() { return x; }
         public int getY() { return y; }
+        public void setY(int newY) { y = newY; }
         public boolean isAlive() { return alive; }
     }
     
@@ -199,6 +200,9 @@ public class GameModel {
         // Move alien formation
         moveAlienFormation();
         
+        // Check if any aliens have left the screen boundaries
+        checkAliensOutOfBounds();
+        
         // Fire alien bullets
         fireAlienBullets();
         
@@ -235,6 +239,20 @@ public class GameModel {
                 }
             }
             alienDirection *= -1; // Reverse direction
+        }
+    }
+    
+    private void checkAliensOutOfBounds() {
+        // Check if any alive alien has left the screen boundaries
+        for (int row = 0; row < ALIEN_ROWS; row++) {
+            for (int col = 0; col < ALIEN_COLS; col++) {
+                Alien alien = alienGrid[row][col];
+                if (alien.alive && alien.y + ALIEN_HEIGHT >= GAME_HEIGHT) {
+                    // Alien has reached or crossed the bottom boundary
+                    lives = 0; // Trigger game over
+                    return;
+                }
+            }
         }
     }
     
