@@ -71,11 +71,6 @@ public class GameController extends JFrame implements KeyListener {
         
         // Redraw view
         view.repaint();
-        
-        // Check if game is over or won and stop the loop
-        if (model.isGameOver() || model.isGameWon()) {
-            gameLoopTimer.stop();
-        }
     }
     
     @Override
@@ -85,6 +80,22 @@ public class GameController extends JFrame implements KeyListener {
         // Fire on spacebar
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             model.firePlayerBullet();
+        }
+        
+        // Start game on S key
+        if (e.getKeyCode() == KeyEvent.VK_S) {
+            if (model.getGameState().equals(GameModel.STATE_START_SCREEN)) {
+                model.startGame();
+            } else if (model.getGameState().equals(GameModel.STATE_GAME_OVER)) {
+                model.restartGame();
+            }
+        }
+        
+        // Back to start screen on A key
+        if (e.getKeyCode() == KeyEvent.VK_A) {
+            if (model.getGameState().equals(GameModel.STATE_GAME_OVER)) {
+                model.backToStartScreen();
+            }
         }
     }
     

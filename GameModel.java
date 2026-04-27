@@ -9,9 +9,17 @@ import java.util.Random;
  * scoring, and any other game mechanics without any Swing dependencies.
  */
 public class GameModel {
+    // Game states
+    public static final String STATE_START_SCREEN = "START_SCREEN";
+    public static final String STATE_PLAYING = "PLAYING";
+    public static final String STATE_GAME_OVER = "GAME_OVER";
+    
     // Game dimensions
     private static final int GAME_WIDTH = 800;
     private static final int GAME_HEIGHT = 600;
+    
+    // Current game state
+    private String gameState;
     
     // Player state
     private int playerX;
@@ -40,8 +48,8 @@ public class GameModel {
     
     // Shields
     private List<Shield> shields;
-    private static final int SHIELD_WIDTH = 40;
-    private static final int SHIELD_HEIGHT = 40;
+    private static final int SHIELD_WIDTH = 50;
+    private static final int SHIELD_HEIGHT = 30;
     private static final int SHIELD_HEALTH = 5;
     
     // Game state
@@ -111,7 +119,13 @@ public class GameModel {
     
     public GameModel() {
         random = new Random();
+        gameState = STATE_START_SCREEN;
         
+        // Initialize game components (will be ready for when PLAYING state starts)
+        initializeGame();
+    }
+    
+    private void initializeGame() {
         // Initialize player
         playerX = GAME_WIDTH / 2 - PLAYER_WIDTH / 2;
         playerY = GAME_HEIGHT - 60;
@@ -160,16 +174,19 @@ public class GameModel {
     
     // Move player left
     public void movePlayerLeft() {
+        if (!gameState.equals(STATE_PLAYING)) return;
         playerX = Math.max(0, playerX - PLAYER_SPEED);
     }
     
     // Move player right
     public void movePlayerRight() {
+        if (!gameState.equals(STATE_PLAYING)) return;
         playerX = Math.min(GAME_WIDTH - PLAYER_WIDTH, playerX + PLAYER_SPEED);
     }
     
     // Fire player bullet
     public void firePlayerBullet() {
+        if (!gameState.equals(STATE_PLAYING)) return;
         if (playerBullet == null) {
             int bulletX = playerX + PLAYER_WIDTH / 2 - 2;
             int bulletY = playerY;
@@ -179,6 +196,11 @@ public class GameModel {
     
     // Update game state each tick
     public void update() {
+        // Only update if game is actively playing
+        if (!gameState.equals(STATE_PLAYING)) {
+            return;
+        }
+        
         // Update player bullet
         if (playerBullet != null) {
             playerBullet.y -= BULLET_SPEED;
@@ -208,6 +230,11 @@ public class GameModel {
         
         // Detect collisions
         detectCollisions();
+        
+        // Check win/lose conditions
+        if (isGameWon() || lives <= 0) {
+            gameState = STATE_GAME_OVER;
+        }
     }
     
     private void moveAlienFormation() {
@@ -346,7 +373,24 @@ public class GameModel {
                y1 < y2 + h2 && y1 + h1 > y2;
     }
     
+    // Game state management
+    public void startGame() {
+        if (gameState.equals(STATE_START_SCREEN)) {
+            gameState = STATE_PLAYING;
+        }
+    }
+    
+    public void restartGame() {
+        initializeGame();
+        gameState = STATE_PLAYING;
+    }
+    
+    public void backToStartScreen() {
+        gameState = STATE_START_SCREEN;
+    }
+    
     // Getters
+    public String getGameState() { return gameState; }
     public int getPlayerX() { return playerX; }
     public int getPlayerY() { return playerY; }
     public int getPlayerWidth() { return PLAYER_WIDTH; }
