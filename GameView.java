@@ -34,6 +34,38 @@ public class GameView extends JPanel {
     }
     
     private void drawGame(Graphics2D g) {
+        String gameState = model.getGameState();
+        
+        if (gameState.equals(GameModel.STATE_START_SCREEN)) {
+            drawStartScreen(g);
+        } else if (gameState.equals(GameModel.STATE_PLAYING)) {
+            drawPlayingState(g);
+        } else if (gameState.equals(GameModel.STATE_GAME_OVER)) {
+            drawGameOverScreen(g);
+        }
+    }
+    
+    private void drawStartScreen(Graphics2D g) {
+        // Draw title in big green letters
+        g.setColor(Color.GREEN);
+        g.setFont(new Font("Arial", Font.BOLD, 80));
+        String title = "SPACE INVADERS";
+        int titleWidth = g.getFontMetrics().stringWidth(title);
+        g.drawString(title,
+                     (model.getGameWidth() - titleWidth) / 2,
+                     model.getGameHeight() / 2 - 100);
+        
+        // Draw "Press S to Start" in white
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        String startText = "Press S to Start";
+        int startWidth = g.getFontMetrics().stringWidth(startText);
+        g.drawString(startText,
+                     (model.getGameWidth() - startWidth) / 2,
+                     model.getGameHeight() / 2 + 100);
+    }
+    
+    private void drawPlayingState(Graphics2D g) {
         // Draw player
         drawPlayer(g);
         
@@ -49,12 +81,22 @@ public class GameView extends JPanel {
         
         // Draw HUD (score and lives)
         drawHUD(g);
+    }
+    
+    private void drawGameOverScreen(Graphics2D g) {
+        // Draw game state first (for aliens/bullets visual context)
+        drawPlayer(g);
+        drawShields(g);
+        drawAliens(g);
+        drawPlayerBullet(g);
+        drawAlienBullets(g);
+        drawHUD(g);
         
-        // Draw game over or game won message
-        if (model.isGameOver()) {
-            drawGameOver(g);
-        } else if (model.isGameWon()) {
-            drawGameWon(g);
+        // Draw overlay and end screen
+        if (model.isGameWon()) {
+            drawWinScreen(g);
+        } else {
+            drawLoseScreen(g);
         }
     }
     
@@ -100,6 +142,17 @@ public class GameView extends JPanel {
     }
     
     private void drawAliens(Graphics2D g) {
+        // Alien pixel art pattern: 9x7
+        int[][] alienPattern = {
+            {0,0,1,0,0,0,1,0,0},
+            {0,1,1,1,0,1,1,1,0},
+            {1,1,1,1,1,1,1,1,1},
+            {1,0,1,1,1,1,1,0,1},
+            {1,1,1,0,1,0,1,1,1},
+            {0,1,0,0,0,0,0,1,0},
+            {1,0,0,1,0,1,0,0,1}
+        };
+        
         GameModel.Alien[][] alienGrid = model.getAlienGrid();
         g.setColor(Color.RED);
         
@@ -107,16 +160,41 @@ public class GameView extends JPanel {
             for (int col = 0; col < alienGrid[row].length; col++) {
                 GameModel.Alien alien = alienGrid[row][col];
                 if (alien != null && alien.isAlive()) {
-                    g.fillRect(alien.getX(), alien.getY(),
-                               model.getAlienWidth(), model.getAlienHeight());
-                    g.setColor(new Color(139, 0, 0)); // Dark red
-                    g.setStroke(new java.awt.BasicStroke(1));
-                    g.drawRect(alien.getX(), alien.getY(),
-                               model.getAlienWidth(), model.getAlienHeight());
-                    g.setColor(Color.RED);
+                    drawAlienPixelArt(g, alien, alienPattern);
                 }
             }
         }
+    }
+    
+    private void drawAlienPixelArt(Graphics2D g, GameModel.Alien alien, int[][] pattern) {
+        int alienWidth = model.getAlienWidth();
+        int alienHeight = model.getAlienHeight();
+        int patternWidth = 9;
+        int patternHeight = 7;
+        
+        // Calculate pixel size
+        float pixelWidth = (float) alienWidth / patternWidth;
+        float pixelHeight = (float) alienHeight / patternHeight;
+        
+        g.setColor(Color.RED);
+        
+        // Draw each pixel in the pattern
+        for (int row = 0; row < patternHeight; row++) {
+            for (int col = 0; col < patternWidth; col++) {
+                if (pattern[row][col] == 1) {
+                    int x = alien.getX() + (int)(col * pixelWidth);
+                    int y = alien.getY() + (int)(row * pixelHeight);
+                    int w = (int)pixelWidth;
+                    int h = (int)pixelHeight;
+                    g.fillRect(x, y, w, h);
+                }
+            }
+        }
+        
+        // Draw border around entire alien
+        g.setColor(new Color(0, 0, 0)); // Black so it blends in
+        g.setStroke(new java.awt.BasicStroke(1));
+        g.drawRect(alien.getX(), alien.getY(), alienWidth, alienHeight);
     }
     
     private void drawPlayerBullet(Graphics2D g) {
@@ -147,7 +225,7 @@ public class GameView extends JPanel {
         g.drawString("Lives: " + model.getLives(), model.getGameWidth() - 200, 30);
     }
     
-    private void drawGameOver(Graphics2D g) {
+    private void drawLoseScreen(Graphics2D g) {
         // Semi-transparent overlay
         g.setColor(new Color(0, 0, 0, 200));
         g.fillRect(0, 0, model.getGameWidth(), model.getGameHeight());
@@ -159,18 +237,34 @@ public class GameView extends JPanel {
         int textWidth = g.getFontMetrics().stringWidth(gameOverText);
         g.drawString(gameOverText,
                      (model.getGameWidth() - textWidth) / 2,
-                     model.getGameHeight() / 2 - 50);
+                     model.getGameHeight() / 2 - 100);
         
         // Final score
+        g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 30));
         String scoreText = "Final Score: " + model.getScore();
         textWidth = g.getFontMetrics().stringWidth(scoreText);
         g.drawString(scoreText,
                      (model.getGameWidth() - textWidth) / 2,
-                     model.getGameHeight() / 2 + 20);
+                     model.getGameHeight() / 2 - 20);
+        
+        // Restart options
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        String restartText1 = "Press S to Restart";
+        textWidth = g.getFontMetrics().stringWidth(restartText1);
+        g.drawString(restartText1,
+                     (model.getGameWidth() - textWidth) / 2,
+                     model.getGameHeight() / 2 + 60);
+        
+        String restartText2 = "Press A for Start Screen";
+        textWidth = g.getFontMetrics().stringWidth(restartText2);
+        g.drawString(restartText2,
+                     (model.getGameWidth() - textWidth) / 2,
+                     model.getGameHeight() / 2 + 90);
     }
     
-    private void drawGameWon(Graphics2D g) {
+    private void drawWinScreen(Graphics2D g) {
         // Semi-transparent overlay
         g.setColor(new Color(0, 0, 0, 200));
         g.fillRect(0, 0, model.getGameWidth(), model.getGameHeight());
@@ -182,15 +276,31 @@ public class GameView extends JPanel {
         int textWidth = g.getFontMetrics().stringWidth(winText);
         g.drawString(winText,
                      (model.getGameWidth() - textWidth) / 2,
-                     model.getGameHeight() / 2 - 50);
+                     model.getGameHeight() / 2 - 100);
         
         // Final score
+        g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 30));
         String scoreText = "Final Score: " + model.getScore();
         textWidth = g.getFontMetrics().stringWidth(scoreText);
         g.drawString(scoreText,
                      (model.getGameWidth() - textWidth) / 2,
-                     model.getGameHeight() / 2 + 20);
+                     model.getGameHeight() / 2 - 20);
+        
+        // Restart options
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        String restartText1 = "Press S to Restart";
+        textWidth = g.getFontMetrics().stringWidth(restartText1);
+        g.drawString(restartText1,
+                     (model.getGameWidth() - textWidth) / 2,
+                     model.getGameHeight() / 2 + 60);
+        
+        String restartText2 = "Press A for Start Screen";
+        textWidth = g.getFontMetrics().stringWidth(restartText2);
+        g.drawString(restartText2,
+                     (model.getGameWidth() - textWidth) / 2,
+                     model.getGameHeight() / 2 + 90);
     }
     
     public static void main(String[] args) {

@@ -78,8 +78,10 @@ Successfully changed the aliens to a pixel sprite!!! There is a still an red out
 # Prompt 11
 Create a start screen that is a state in GameModel.java, but is only drawn in the GameView.java file with the name of the program in big green letters. When the game is over, (by winning or by losing), have a way of either starting the game again, which is triggered by a pressing the S key in GameController.java, or going back to the start screen. Show it as text in the GameView.java in white.
 # Results:
+Sucessfully created a startscreen, and a way of restarting game, also with a way of going to startscreen. 
 
 # Prompt 12 (Continuation of prompt above)
 In GameView.java, in the lose screen and the win screen, make the two options, (pressing S or pressing A), seperate lines.
 # Results
+Formatted the game over and win screen the way I intended!
  
