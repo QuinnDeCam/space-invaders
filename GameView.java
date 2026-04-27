@@ -37,6 +37,9 @@ public class GameView extends JPanel {
         // Draw player
         drawPlayer(g);
         
+        // Draw shields
+        drawShields(g);
+        
         // Draw aliens
         drawAliens(g);
         
@@ -63,6 +66,34 @@ public class GameView extends JPanel {
         g.setStroke(new java.awt.BasicStroke(2));
         g.drawRect(model.getPlayerX(), model.getPlayerY(),
                    model.getPlayerWidth(), model.getPlayerHeight());
+    }
+    
+    private void drawShields(Graphics2D g) {
+        java.util.List<GameModel.Shield> shields = model.getShields();
+        
+        for (GameModel.Shield shield : shields) {
+            // Color based on health: full green (3) to dim red (1)
+            Color shieldColor;
+            int health = shield.getHealth();
+            
+            if (health == 3) {
+                shieldColor = Color.GREEN;
+            } else if (health == 2) {
+                // Transition from green to yellow
+                shieldColor = new Color(128, 128, 0); // Olive (greenish-yellow)
+            } else {
+                // Red (health == 1)
+                shieldColor = new Color(139, 0, 0); // Dark red
+            }
+            
+            g.setColor(shieldColor);
+            g.fillRect(shield.getX(), shield.getY(),
+                       model.getShieldWidth(), model.getShieldHeight());
+            g.setColor(Color.LIGHT_GRAY);
+            g.setStroke(new java.awt.BasicStroke(1));
+            g.drawRect(shield.getX(), shield.getY(),
+                       model.getShieldWidth(), model.getShieldHeight());
+        }
     }
     
     private void drawAliens(Graphics2D g) {

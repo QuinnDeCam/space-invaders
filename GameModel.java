@@ -38,6 +38,12 @@ public class GameModel {
     private static final int BULLET_SPEED = 7;
     private static final int ALIEN_BULLET_SPEED = 4;
     
+    // Shields
+    private List<Shield> shields;
+    private static final int SHIELD_WIDTH = 40;
+    private static final int SHIELD_HEIGHT = 40;
+    private static final int SHIELD_HEALTH = 3;
+    
     // Game state
     private int score;
     private int lives;
@@ -85,6 +91,23 @@ public class GameModel {
         public int getY() { return y; }
     }
     
+    public static class Shield {
+        private int x, y;
+        private int health;
+        
+        Shield(int x, int y, int health) {
+            this.x = x;
+            this.y = y;
+            this.health = health;
+        }
+        
+        public int getX() { return x; }
+        public int getY() { return y; }
+        public int getHealth() { return health; }
+        public void takeDamage(int damage) { health -= damage; }
+        public boolean isAlive() { return health > 0; }
+    }
+    
     public GameModel() {
         random = new Random();
         
@@ -103,6 +126,10 @@ public class GameModel {
         alienBullets = new ArrayList<>();
         playerBullet = null;
         
+        // Initialize shields
+        shields = new ArrayList<>();
+        initializeShields();
+        
         // Initialize game state
         score = 0;
         lives = 3;
@@ -116,6 +143,17 @@ public class GameModel {
                 int y = alienFormationY + row * (ALIEN_HEIGHT + ALIEN_PADDING);
                 alienGrid[row][col] = new Alien(x, y);
             }
+        }
+    }
+    
+    private void initializeShields() {
+        // Create 4 shields positioned between player and alien formation
+        int shieldY = GAME_HEIGHT / 2 - SHIELD_HEIGHT / 2; // Middle of screen
+        int spacing = GAME_WIDTH / 5; // Spread shields across screen
+        
+        for (int i = 1; i <= 4; i++) {
+            int shieldX = i * spacing - SHIELD_WIDTH / 2;
+            shields.add(new Shield(shieldX, shieldY, SHIELD_HEALTH));
         }
     }
     
@@ -242,6 +280,32 @@ public class GameModel {
             }
         }
         
+        // Check player bullet collisions with shields
+        if (playerBullet != null) {
+            for (Shield shield : shields) {
+                if (shield.isAlive() && isColliding(playerBullet.x, playerBullet.y, 4, 8,
+                        shield.x, shield.y, SHIELD_WIDTH, SHIELD_HEIGHT)) {
+                    shield.takeDamage(1);
+                    playerBullet = null;
+                    return; // Only one collision per tick
+                }
+            }
+        }
+        
+        // Check alien bullet collisions with shields
+        Iterator<AlienBullet> alienBulletIter = alienBullets.iterator();
+        while (alienBulletIter.hasNext()) {
+            AlienBullet bullet = alienBulletIter.next();
+            for (Shield shield : shields) {
+                if (shield.isAlive() && isColliding(bullet.x, bullet.y, 4, 8,
+                        shield.x, shield.y, SHIELD_WIDTH, SHIELD_HEIGHT)) {
+                    shield.takeDamage(1);
+                    alienBulletIter.remove();
+                    return; // Only one collision per tick
+                }
+            }
+        }
+        
         // Check alien bullet collisions with player
         Iterator<AlienBullet> bulletIter = alienBullets.iterator();
         while (bulletIter.hasNext()) {
@@ -253,6 +317,9 @@ public class GameModel {
                 return; // Only one collision per tick
             }
         }
+        
+        // Remove dead shields
+        shields.removeIf(shield -> !shield.isAlive());
     }
     
     private boolean isColliding(int x1, int y1, int w1, int h1,
@@ -273,6 +340,9 @@ public class GameModel {
     
     public PlayerBullet getPlayerBullet() { return playerBullet; }
     public List<AlienBullet> getAlienBullets() { return alienBullets; }
+    public List<Shield> getShields() { return shields; }
+    public int getShieldWidth() { return SHIELD_WIDTH; }
+    public int getShieldHeight() { return SHIELD_HEIGHT; }
     
     public int getScore() { return score; }
     public int getLives() { return lives; }

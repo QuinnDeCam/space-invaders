@@ -36,9 +36,12 @@ Losing all lives triggers game-over — simulates damage until isGameOver() retu
 ––––––––– All tests passed ––––––––
 
 # Prompt 6
+In GameModel.java, add a list of shield rectangles positioned between the player and the alien formation. Reduce a shield's health when hit by a bullet from either side. Remove the shield when health reaches zero. No Swing imports.
 # Results:
+Changed all main files. Decided to add shield functionality to GameModel, then updated GameView to render the shields, and even updated ModelTester to verify shield behavior. The AI folowed the constraints, no Swing imports, but in GameView shields are pure game logic in GameModelrenders shields with color fading (bright blue → dark blue → cornflower blue) as health decreases.
 
 # Prompt 7
+In GameView.java's paintComponent method only, draw the shields from the model's shield list. Use the shield's health value to choose a color from full green to dim red. Do not call any model mutating methods.
 # Results:
 
 

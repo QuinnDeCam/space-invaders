@@ -17,6 +17,9 @@ public class ModelTester {
         testBulletRemovedWhenReachingTop();
         testDestroyingAlienIncreasesScore();
         testLosingAllLivesTriggersGameOver();
+        testShieldsCreatedAtStart();
+        testShieldsTakeDamageFromBullets();
+        testShieldsRemovedWhenHealthZero();
         
         System.out.println("\n=== Test Summary ===");
         System.out.println("PASSED: " + passCount);
@@ -207,6 +210,108 @@ public class ModelTester {
             passCount++;
         } else {
             System.out.println("FAIL (game not over, lives: " + model.getLives() + ")");
+            failCount++;
+        }
+    }
+    
+    private static void testShieldsCreatedAtStart() {
+        System.out.print("Test 7: Shields created at start... ");
+        GameModel model = new GameModel();
+        
+        if (model.getShields().size() == 4) {
+            System.out.println("PASS (4 shields)");
+            passCount++;
+        } else {
+            System.out.println("FAIL (shields count: " + model.getShields().size() + ")");
+            failCount++;
+        }
+    }
+    
+    private static void testShieldsTakeDamageFromBullets() {
+        System.out.print("Test 8: Shields take damage from bullets... ");
+        GameModel model = new GameModel();
+        
+        java.util.List<GameModel.Shield> shields = model.getShields();
+        if (shields.isEmpty()) {
+            System.out.println("FAIL (no shields)");
+            failCount++;
+            return;
+        }
+        
+        GameModel.Shield testShield = shields.get(0);
+        int initialHealth = testShield.getHealth();
+        
+        // Move player to align with first shield
+        int targetX = testShield.getX() + 10;
+        while (model.getPlayerX() < targetX) {
+            model.movePlayerRight();
+        }
+        while (model.getPlayerX() > targetX) {
+            model.movePlayerLeft();
+        }
+        
+        // Fire bullet and update until it hits shield
+        model.firePlayerBullet();
+        for (int i = 0; i < 500; i++) {
+            model.update();
+            if (model.getPlayerBullet() == null) {
+                break; // Bullet was used
+            }
+        }
+        
+        // Check if shield took damage
+        if (testShield.getHealth() < initialHealth) {
+            System.out.println("PASS (health: " + initialHealth + " -> " + testShield.getHealth() + ")");
+            passCount++;
+        } else {
+            System.out.println("FAIL (shield health unchanged)");
+            failCount++;
+        }
+    }
+    
+    private static void testShieldsRemovedWhenHealthZero() {
+        System.out.print("Test 9: Shields removed when health zero... ");
+        GameModel model = new GameModel();
+        
+        java.util.List<GameModel.Shield> shields = model.getShields();
+        if (shields.isEmpty()) {
+            System.out.println("FAIL (no shields)");
+            failCount++;
+            return;
+        }
+        
+        GameModel.Shield testShield = shields.get(1); // Use second shield
+        int initialCount = shields.size();
+        
+        // Move player to align with this shield
+        int targetX = testShield.getX() + 10;
+        while (model.getPlayerX() < targetX) {
+            model.movePlayerRight();
+        }
+        while (model.getPlayerX() > targetX) {
+            model.movePlayerLeft();
+        }
+        
+        // Fire 3 bullets to destroy shield (health = 3)
+        for (int shot = 0; shot < 3; shot++) {
+            model.firePlayerBullet();
+            for (int i = 0; i < 500; i++) {
+                model.update();
+                if (model.getPlayerBullet() == null) {
+                    break;
+                }
+            }
+        }
+        
+        // Refresh shields list (it may have been modified)
+        java.util.List<GameModel.Shield> currentShields = model.getShields();
+        
+        // Check if shield was removed
+        if (currentShields.size() < initialCount) {
+            System.out.println("PASS (shields: " + initialCount + " -> " + currentShields.size() + ")");
+            passCount++;
+        } else {
+            System.out.println("FAIL (shield count unchanged)");
             failCount++;
         }
     }
