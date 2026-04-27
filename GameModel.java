@@ -59,6 +59,7 @@ public class GameModel {
     private int alienFireCounter;
     private static final int ALIEN_FIRE_INTERVAL = 30; // Fire every 30 ticks on average
     
+    
     // Helper classes
     public static class Alien {
         private int x, y;
@@ -324,6 +325,7 @@ public class GameModel {
                 }
             }
         }
+        
         
         // Check player bullet collisions with shields
         if (playerBullet != null) {

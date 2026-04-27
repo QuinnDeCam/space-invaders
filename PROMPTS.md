@@ -98,5 +98,6 @@ int[][] player = {
 {0,0,0,0,0,0,0,0,0,0},
 };
 With the 1's having a color of (0, 149, 194)
-# Results
-<!-- Little note here, AI i was using ran out and it switched to a different one :( -->
+# Results (Little note here, AI i was using ran out and it switched to a different one :(
+))
+Successfully turned player into a better sprite!! I did edit the 2D array a little bit after since it wasn't what I was expecting, so I made it thinner by putting more empty space on the bottom.  
