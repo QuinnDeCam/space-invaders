@@ -85,3 +85,18 @@ In GameView.java, in the lose screen and the win screen, make the two options, (
 # Results
 Formatted the game over and win screen the way I intended!
  
+# Prompt 13
+In GameView.java, edit the look of the player just like we did for the aliens. This time, the player will become a 10x10 pixel sprite with a shape like this:
+int[][] player = {
+{0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,1,1,0,0,0,0},
+{0,0,0,1,1,1,1,0,0,0},
+{1,1,1,1,1,1,1,1,1,1},
+{1,1,1,1,1,1,1,1,1,1},
+{1,1,1,1,1,1,1,1,1,1},
+{1,1,1,1,1,1,1,1,1,1},
+{0,0,0,0,0,0,0,0,0,0},
+};
+With the 1's having a color of (0, 149, 194)
+# Results
+<!-- Little note here, AI i was using ran out and it switched to a different one :( -->

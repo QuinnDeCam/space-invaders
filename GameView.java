@@ -100,15 +100,50 @@ public class GameView extends JPanel {
         }
     }
     
-    private void drawPlayer(Graphics2D g) {
-        g.setColor(Color.GREEN);
-        g.fillRect(model.getPlayerX(), model.getPlayerY(), 
-                   model.getPlayerWidth(), model.getPlayerHeight());
-        g.setColor(Color.LIGHT_GRAY);
-        g.setStroke(new java.awt.BasicStroke(2));
-        g.drawRect(model.getPlayerX(), model.getPlayerY(),
-                   model.getPlayerWidth(), model.getPlayerHeight());
+private void drawPlayer(Graphics2D g) {
+
+    int[][] player = {        
+        {0,0,0,0,1,1,0,0,0,0},
+        {0,0,0,1,1,1,1,0,0,0},
+        {1,1,1,1,1,1,1,1,1,1},
+        {1,1,1,1,1,1,1,1,1,1},
+        {1,1,1,1,1,1,1,1,1,1},
+        {0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0}
+    };
+
+    int x = model.getPlayerX();
+    int y = model.getPlayerY();
+
+    int w = model.getPlayerWidth();
+    int h = model.getPlayerHeight();
+
+    int pixelW = w / 10;
+    int pixelH = h / 8;
+
+    Color playerColor = new Color(0, 149, 194);
+    g.setColor(playerColor);
+
+    for (int row = 0; row < player.length; row++) {
+        for (int col = 0; col < player[row].length; col++) {
+
+            if (player[row][col] == 1) {
+                g.fillRect(
+                    x + col * pixelW,
+                    y + row * pixelH,
+                    pixelW,
+                    pixelH
+                );
+            }
+        }
     }
+
+    // outline (keeps retro feel)
+    g.setColor(Color.BLACK);
+    g.setStroke(new java.awt.BasicStroke(2));
+    g.drawRect(x, y, w, h);
+}
     
     private void drawShields(Graphics2D g) {
         java.util.List<GameModel.Shield> shields = model.getShields();
