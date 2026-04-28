@@ -101,3 +101,11 @@ With the 1's having a color of (0, 149, 194)
 # Results (Little note here, AI i was using ran out and it switched to a different one :(
 ))
 Successfully turned player into a better sprite!! I did edit the 2D array a little bit after since it wasn't what I was expecting, so I made it thinner by putting more empty space on the bottom.  
+
+# Prompt 14
+Can you add a glow effect to the player in GameView.java when the player is hit
+# Results
+Flashes a little red box over player when hit
+
+# Prompt 15
+# Results

@@ -27,6 +27,7 @@ public class GameModel {
     private static final int PLAYER_WIDTH = 40;
     private static final int PLAYER_HEIGHT = 40;
     private static final int PLAYER_SPEED = 10;
+    private int playerHitCounter; // Tracks frames since player was hit for glow effect
     
     // Alien grid
     private Alien[][] alienGrid;
@@ -150,6 +151,7 @@ public class GameModel {
         score = 0;
         lives = 3;
         alienFireCounter = 0;
+        playerHitCounter = 0;
     }
     
     private void initializeAliens() {
@@ -200,6 +202,11 @@ public class GameModel {
         // Only update if game is actively playing
         if (!gameState.equals(STATE_PLAYING)) {
             return;
+        }
+        
+        // Decrement hit counter for glow effect
+        if (playerHitCounter > 0) {
+            playerHitCounter--;
         }
         
         // Update player bullet
@@ -361,6 +368,7 @@ public class GameModel {
                     playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT)) {
                 bulletIter.remove();
                 lives--;
+                playerHitCounter = 15; // Trigger glow effect for 15 frames
                 return; // Only one collision per tick
             }
         }
@@ -412,6 +420,7 @@ public class GameModel {
     public int getLives() { return lives; }
     public int getGameWidth() { return GAME_WIDTH; }
     public int getGameHeight() { return GAME_HEIGHT; }
+    public int getPlayerHitCounter() { return playerHitCounter; }
     
     public boolean isGameOver() { return lives <= 0; }
     public boolean isGameWon() {

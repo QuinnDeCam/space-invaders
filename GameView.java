@@ -139,6 +139,15 @@ private void drawPlayer(Graphics2D g) {
         }
     }
 
+    // Draw glow effect when player is hit
+    if (model.getPlayerHitCounter() > 0) {
+        // Create pulsing glow intensity based on hit counter
+        float alpha = (model.getPlayerHitCounter() / 15.0f) * 0.6f; // Fades from 0.6 to 0 over 15 frames
+        Color glowColor = new Color(1.0f, 0.0f, 0.0f, alpha); // Red glow with transparency
+        g.setColor(glowColor);
+        g.fillRect(x, y, w, h);
+    }
+
     // outline (keeps retro feel)
     g.setColor(Color.BLACK);
     g.setStroke(new java.awt.BasicStroke(2));
